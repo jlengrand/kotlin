@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.idea.fir.low.level.api.api.FirModuleResolveState
 import org.jetbrains.kotlin.idea.frontend.api.fir.KtSymbolByFirBuilder
 import org.jetbrains.kotlin.idea.frontend.api.fir.utils.firRef
 import org.jetbrains.kotlin.idea.frontend.api.fir.utils.weakRef
+import org.jetbrains.kotlin.idea.frontend.api.symbols.KtSymbol
 import org.jetbrains.kotlin.idea.frontend.api.symbols.KtTypeParameterSymbol
 import org.jetbrains.kotlin.idea.frontend.api.symbols.pointers.KtPsiBasedSymbolPointer
 import org.jetbrains.kotlin.idea.frontend.api.symbols.pointers.KtSymbolPointer
@@ -39,6 +40,16 @@ internal class KtFirTypeParameterSymbol(
 
     override val variance: Variance get() = firRef.withFir { it.variance }
     override val isReified: Boolean get() = firRef.withFir { it.isReified }
+    override val owner: KtSymbol?
+        get() {
+            return firRef.withFir { fir ->
+                fir.containingDeclarationSymbol?.fir?.let { containingDeclaration ->
+                    builder.buildSymbol(
+                        containingDeclaration
+                    )
+                }
+            }
+        }
 
     override fun createPointer(): KtSymbolPointer<KtTypeParameterSymbol> {
         KtPsiBasedSymbolPointer.createForSymbolFromSource(this)?.let { return it }

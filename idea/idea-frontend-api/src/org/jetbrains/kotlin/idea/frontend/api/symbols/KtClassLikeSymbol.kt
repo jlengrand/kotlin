@@ -24,6 +24,7 @@ public abstract class KtTypeParameterSymbol : KtClassifierSymbol(), KtNamedSymbo
     public abstract val upperBounds: List<KtType>
     public abstract val variance: Variance
     public abstract val isReified: Boolean
+    public abstract val owner: KtSymbol?
 }
 
 public sealed class KtClassLikeSymbol : KtClassifierSymbol(), KtSymbolWithKind {
